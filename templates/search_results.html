@@ -1,0 +1,69 @@
+{% extends "base_main.html" %}
+
+{% block head %}
+{% load static %}
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		var i;
+		
+		for (const v of ["select_a", "select_b"])
+		{
+			inputs = document.getElementsByName(v);
+			
+			for(i=0; i<inputs.length; i++)
+			{
+				if(inputs[i].getAttribute('type')=='radio')
+				{
+					inputs[i].checked = true;
+					break;
+				}
+			}
+		}
+	})
+</script>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="row">
+	<form>
+		{% csrf_token %}
+		
+		<label style="display: inline-block;">Distance of half confidence</label>
+		<input type="number" name="half_distance" title="Distance between a pair of gene 5' and probe mid point that you believe are 50% confidence." min="0" max="10000000" step="1" value="{{half_distance}}" style="width:10em;display: inline-block;">
+		
+		<br>
+		<p>Please confirm your input query genes.</p>
+		
+		<br>
+		<p>You searched for: <b>"{{query_a}}"</b>. Please select one to continue.</p>
+		
+		{% if query_a_lst %}
+			<b>Signal Molecules</b>
+			<br>
+			{% for query in query_a_lst %}
+				<input type="radio" name="select_a" value="{{query.Symbol}}"> {{query.Symbol}} ({{query.taxid}})
+				<br>
+			{% endfor %}
+		{% endif %}
+		
+		<br>
+		<p>You searched for: <b>"{{query_b}}"</b>. Please select one to continue.</p>
+		
+		{% if query_b_lst %}
+			<b>Signal Molecules</b>
+			<br>
+			{% for query in query_b_lst %}
+				<input type="radio" name="select_b" value="{{query.Symbol}}"> {{query.Symbol}} ({{query.taxid}})
+				<br>
+			{% endfor %}
+		{% endif %}
+		
+		<p><input class="button" type="submit"></p><br>
+	
+	</form>	
+</div>
+{% endblock %}

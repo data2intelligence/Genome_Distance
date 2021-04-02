@@ -1,0 +1,19 @@
+{% extends "base_main.html" %}
+
+{% block content %}
+{% load static %}
+
+<div class="row">
+	<h2>{{title}}</h2>
+	<p>{{description}}</p>
+	
+	<div class="large-3 columns">
+	<img src="{% static 'img/tuzki_awesome.gif' %}" />
+	</div>
+	
+	<br>
+</div>
+
+<br>
+
+{% endblock %}

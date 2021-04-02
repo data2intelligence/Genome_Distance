@@ -1,0 +1,37 @@
+{% extends "base_main.html" %}
+
+{% block head %}
+{% load static %}
+<script type="text/javascript">
+	function goHome() {window.location = "/";}
+
+	function goBack() {window.history.back();}
+
+	{% if GOHOME %}
+	document.write("You will be redirected to main page in {{GOHOME}} sec.");
+	setTimeout('goHome()', 1000 * {{GOHOME}});
+	{% endif %}
+
+	{% if GOBACK %}
+	document.write("You will be redirected to selection page in {{GOBACK}} sec.");
+	setTimeout('goBack()', 1000 * {{GOBACK}});
+	{% endif %}
+</script>
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+	<h3>{{message}}</h3>
+	<img src="{% static 'img/tuzki_cry.gif' %}" />
+
+	<br><br>
+
+	{% if GOBACK %}
+		<button class='ui grey button' onclick="goBack()">Back to previous page</button>
+	{% elif GOHOME %}
+		<button class='ui grey button' onclick="goHome()">Back to home</button>
+	{% else %}	
+	{% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base_main.html" %}
+
+{% block content %}
+
+{% load static %}
+
+<div class="row">
+
+	<div class="slot-item only-SI large-7 columns">
+	<h2>Ask scientific questions</h2>
+		<div class="content">
+			<div class="slot-item only-SI large-4 columns">
+				<img src="{% static 'img/Tom_Misteli.jpeg' %}" width="100%">
+			</div>
+			
+			<div class="slot-item only-SI large-8 columns">
+			<h4>	
+				<a href="https://ccr.cancer.gov/laboratory-of-receptor-biology-and-gene-expression/tom-misteli" target="_blank">Tom Misteli</a>
+				<br>
+				Director, Center for Cancer Research
+				<br>
+				NIH Distinguished Investigator
+				<br><br>
+				<a href="https://ccr.cancer.gov/laboratory-of-receptor-biology-and-gene-expression" target="_blank">Laboratory of Receptor Biology and Gene Expression</a>
+				<br>
+				<a href="https://ccr.cancer.gov/" target="_blank">Center for Cancer Research</a>
+				<br><br>
+				Email: <script type="text/javascript">print_mail_to_link("mistelit", "mail.nih.gov")</script>
+			</h4>
+			</div>
+		</div>
+	</div>
+	
+</div>
+{% endblock %}

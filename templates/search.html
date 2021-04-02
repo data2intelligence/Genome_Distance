@@ -1,0 +1,52 @@
+{% extends "base_main.html" %}
+
+{% block head %}
+{% load static %}
+
+<script type="text/javascript">
+$(document).ready(function() {
+	
+	// auto-complete signal names
+	{% if genes %}
+	var source = [];
+	
+		{% for v in genes %}
+			source.push("{{v}}")
+		{% endfor %}
+		
+	$("#mainSrcInputA").autocomplete({source: source});
+	$("#mainSrcInputB").autocomplete({source: source});
+	{% endif %}
+})
+</script>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="row">
+	<form class="center" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+		<fieldset id="mainSrch">
+		<br>
+		<p>Please input two gene symbols to query genome distance in different conditions.</p>
+		<br>
+		
+		<div class="slot-item only-SI large-3 columns">
+		<input id ="mainSrcInputA" type="text" autocomplete="on" name="query_input_a" placeholder="something like Serpinb9" style="font-size: 16px; font-weight: bold;">
+		</div>
+		
+		<div class="slot-item only-SI large-3 columns">
+		<input id ="mainSrcInputB" type="text" autocomplete="on" name="query_input_b" placeholder="something like Fibp" style="font-size: 16px; font-weight: bold;">
+		</div>
+		
+		<br><br>
+		<p><input value="Search" class="button" type="submit" autocomplete="off" style="height: 30px; width: 100px; font-size: 16px; font-weight: bold;"></p>
+		<br>
+		</fieldset>        
+    </form>
+</div>
+<br>
+
+{% endblock %}

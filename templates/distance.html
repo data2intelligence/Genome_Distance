@@ -1,0 +1,180 @@
+{% extends "base_main.html" %}
+
+{% block head %}
+
+{% load static %}
+
+<script src="{% static 'js/plotly.min.js' %}"></script>
+
+<script type="text/javascript">
+
+$(function() {$("#tabs").tabs();});
+
+
+// make functions available after the document is loaded
+$(document).ready(function() {
+	
+	var layout_histo = {
+			bargap: 0.05, 
+			bargroupgap: 0.2,
+			autosize: false,
+			width: 500,
+			height: 500,
+			xaxis: {title: "Genome Distance"}, 
+			yaxis: {title: "Percent"}
+		};
+	
+	{% for result in result_lst %}
+		// add sort functions
+		$("table#table_{{forloop.counter}}").tablesorter();
+		
+		// Table to CSV file
+		$("#export_table_{{forloop.counter}}").click(
+			function (event) {
+				var outputFile = window.prompt("Please input the name of output csv file ?") || 'export_table';
+				outputFile = outputFile.replace('.csv','') + '.csv';
+				export_table_csv.apply(this, [$('#tabledata_{{forloop.counter}} > table'), outputFile]);
+			}
+		);
+		
+		// plot distance histogram
+		var distance_array = [
+			{% for arr in result.5 %}
+				{{arr.1}}
+				{% if not forloop.last %},{% endif %}
+			{% endfor %}
+		];
+		
+		var trace = {
+			x: distance_array,
+			type: 'histogram',
+			histnorm: 'percent',
+			};
+		
+		var data = [trace];
+		Plotly.newPlot('histo_{{forloop.counter}}', data, layout_histo);
+		
+	{% endfor %}
+});
+
+</script>
+
+<style>
+
+/* Autocomplete selection */
+.scrollTable {
+	position: relative;
+	height: {% if associations|length > 50 %}90vh{% else %}auto{% endif %};
+	overflow-y: auto;
+}
+
+
+.roundbox {
+	border-radius: 10px;
+	border: 2px solid #73AD21;
+	padding: 5px 10px;
+	width: auto;
+	height: auto;
+}
+
+/* Minimum table cell width */
+td:before {
+	content: '';
+	display: block;
+	width: 5em;
+}
+
+/* Table column filter */
+.tablesorter .filtered {
+	display: none;
+}
+
+
+/* hidden filter row */
+.tablesorter-filter-row.hideme td {
+	/* thickness of the closed filter row (height = padding x 2) */
+	padding: 5px;
+	margin: 0;
+	line-height: 0;
+	cursor: pointer;
+}
+
+.tablesorter-filter-row.hideme * {
+	height: 1px;
+	min-height: 0;
+	border: 0;
+	padding: 0;
+	margin: 0;
+	
+	/* don't use visibility: hidden because it disables tabbing */
+	opacity: 0;
+	filter: alpha(opacity=0);
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+
+<h3>Genome Distance between {{select_a}} and {{select_b}}</h3>
+
+<br>
+
+
+<div id="tabs">
+
+	<ul>
+	{% for result in result_lst %}
+		<li><a href="#{{forloop.counter}}">{{result.0.ID}} & {{result.2.ID}} @ {{result.4}}</a></li>
+	{% endfor %}
+	</ul>
+	
+	{% for result in result_lst %}
+		
+		<div id="{{forloop.counter}}" class="row">
+			<p>Confidence {{select_a}}: {{result.1}}. <br> Confidence {{select_b}}: {{result.3}}</p>
+			
+			<div id="tabledata_{{forloop.counter}}" class="slot-item only-SI large-6 columns">
+				<table id="table_{{forloop.counter}}">
+					<thead>
+					<tr>
+						<th title="field of view _ cell ID">Cell</th>
+						<th title="probe genome distance">Distance</th>
+					</tr>
+					</thead>
+					
+					<tbody>
+					
+					{% for arr in result.5 %}
+					<tr>
+						<td>{{arr.0}}</td>
+						<td>{{arr.1}}</td>
+					</tr>
+					{% endfor %}
+					
+					</tbody>
+				</table>
+				
+				<div class='button' align="left">
+					<a role="button" id="export_table_{{forloop.counter}}" title="Download the HTML table to excel CSV.">
+					Download
+					</a>
+				</div>
+			</div>
+			
+			<div class="slot-item only-SI large-6 columns">
+				<div id="histo_{{forloop.counter}}"><!-- Plotly histogram here --></div>
+			</div>
+			 
+			
+		</div>
+		
+	{% endfor %}
+		
+</div>
+
+</div>
+{% endblock %}

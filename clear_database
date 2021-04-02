@@ -1,0 +1,9 @@
+find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+find . -path "*/migrations/*.pyc"  -delete
+
+#mysqladmin -u peng_jiang -pNCI_PJ_123 drop Genome_Distance
+#mysqladmin -u peng_jiang -pNCI_PJ_123 create Genome_Distance
+
+python manage.py makemigrations
+python manage.py migrate
+python manage.py createsuperuser
