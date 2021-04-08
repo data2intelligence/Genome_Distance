@@ -24,10 +24,10 @@ HALF_DISTANCE = 200E3
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '!0rv!#@-sk+(^w9*oi8*e@w7445fod0ln$1yj(12-ij%4zzy#e'
+SECRET_KEY = 'XXX'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
