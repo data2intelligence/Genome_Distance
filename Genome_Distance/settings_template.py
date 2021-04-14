@@ -87,10 +87,23 @@ WSGI_APPLICATION = 'Genome_Distance.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'Genome_Distance',
+        'USER': 'XXX',
+        'PASSWORD': 'XXX',
+        'HOST': '',
+        'PORT': '',
+        
+        'TEST': {
+            'NAME': 'test_Genome_Distance',
+            },
+        
+        'OPTIONS': {
+            'init_command': 'SET foreign_key_checks = 0;',
+            },
     }
 }
+
 
 
 # Password validation
