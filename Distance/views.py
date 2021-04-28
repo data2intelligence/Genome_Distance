@@ -62,8 +62,8 @@ def get_distance(loci_lst_a, loci_lst_b):
         assert loci_b.count() == 1
         loci_b = loci_b[0]
         
-        dis = (loci_a.x - loci_b.x)**2 + (loci_a.y - loci_b.y)**2 + (loci_a.z - loci_b.z)**2
-        dis = numpy.sqrt(dis)
+        dis = (103*(loci_a.x - loci_b.x))**2 + (103*(loci_a.y - loci_b.y))**2 + (250*(loci_a.z - loci_b.z))**2
+        dis = numpy.sqrt(dis)/1000  # nM -> uM
         
         lst = condition_map.get(condition)
         if lst is None:
