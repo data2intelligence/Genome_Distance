@@ -20,6 +20,8 @@ data_path = os.path.join(BASE_DIR, 'data')
 MAX_CHAR_LENGTH = 255
 HALF_DISTANCE = 200E3
 
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 

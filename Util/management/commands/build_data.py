@@ -1,6 +1,6 @@
 import os, sys, pandas
 from django.core.management.base import BaseCommand#, CommandError
-from Distance.models import AliasName, Gene, Probe, GeneProbe, Loci
+from Distance.models import AliasName, Gene, Probe, GeneProbe, Loci, Background
 
 
 class Command(BaseCommand):
@@ -29,6 +29,12 @@ class Command(BaseCommand):
             data = options['operation'][2]
             
             self.insert_loci(condition, data)
+        
+        elif operation == 'insert_background':
+            condition = options['operation'][1]
+            background = options['operation'][2]
+            
+            self.insert_background(condition, background)
         
         else:
             sys.stderr.write('Cannot recognize operation %s\n' % operation)
@@ -104,6 +110,9 @@ class Command(BaseCommand):
         
     
     def insert_geneprobe(self, f):
+        # clean up everything first
+        GeneProbe.objects.all().delete()
+        
         data = pandas.read_csv(f, sep='\t')
         
         cnt_geneprobe = cnt_previous = 0
@@ -124,6 +133,11 @@ class Command(BaseCommand):
             if rc_geneprobe.count() == 0:
                 rc_geneprobe = GeneProbe.objects.create(Gene=gene, Probe=probe, distance=arr['Distance'])
                 cnt_geneprobe += 1
+                
+                gene.Chrom = arr['Probe'].split('-')[0]
+                gene.TSS = arr['Gene 5']
+                
+                gene.save()
             else:
                 assert rc_geneprobe.count() == 1
                 cnt_previous += 1
@@ -162,3 +176,34 @@ class Command(BaseCommand):
                 cnt_previous += 1
         
         print(cnt_loci, 'created loci', cnt_previous, 'previous loci')
+    
+    
+    def insert_background(self, condition, background):
+        background_mean = pandas.read_csv(background + '.mean', sep='\t', index_col=0)
+        background_std = pandas.read_csv(background + '.std', sep='\t', index_col=0)
+        
+        cnt_background = cnt_previous = 0
+        
+        Background.objects.filter(Condition=condition).delete()
+    
+        for chrom, arr_mean in background_mean.items():
+            print('insert', chrom)
+            
+            arr_std = background_std.loc[:, chrom]
+            
+            chrom_A, chrom_B = chrom.split('_')
+            
+            rc_background = Background.objects.filter(Condition=condition, Chrom_A=chrom_A, Chrom_B=chrom_B)
+            
+            if rc_background.count() == 0:
+                rc_background = Background.objects.create(
+                    Condition=condition, Chrom_A=chrom_A, Chrom_B=chrom_B,
+                    histogram_mean=arr_mean.to_json(), histogram_std=arr_std.to_json())
+                
+                cnt_background += 1
+            
+            else:
+                assert rc_background.count() == 1
+                cnt_previous += 1
+        
+        print(cnt_background, 'created background', cnt_previous, 'previous background')

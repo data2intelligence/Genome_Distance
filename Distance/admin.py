@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import AliasName, Gene, Probe, GeneProbe, Loci
+from .models import AliasName, Gene, Probe, GeneProbe, Loci, Background
 
 class AliasNameAdmin(admin.ModelAdmin):
     ordering = ('name',)
@@ -12,8 +12,8 @@ admin.site.register(AliasName, AliasNameAdmin)
 
 class GeneAdmin(admin.ModelAdmin):
     ordering = ('Symbol',)
-    list_display = ['Symbol', 'taxid', 'get_alias']
-    search_fields = ('Symbol', 'taxid', 'Alias__name')
+    list_display = ['Symbol', 'taxid', 'Chrom', 'TSS', 'get_alias']
+    search_fields = ('Symbol', 'taxid', 'Chrom', 'TSS', 'Alias__name')
     
     def get_alias(self, obj):
         return ' | '.join([p.name for p in obj.Alias.all()])
@@ -43,3 +43,11 @@ class LociAdmin(admin.ModelAdmin):
     search_fields = ('Probe__ID', 'Cell', 'Condition')
 
 admin.site.register(Loci, LociAdmin)
+
+
+class BackgroundAdmin(admin.ModelAdmin):
+    list_display = ('Condition', 'Chrom_A', 'Chrom_B', 'histogram_mean', 'histogram_std')
+    ordering = ('Condition', 'Chrom_A', 'Chrom_B', )
+    search_fields = ('Condition', 'Chrom_A', 'Chrom_B', )
+
+admin.site.register(Background, BackgroundAdmin)

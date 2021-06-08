@@ -15,13 +15,14 @@ $(function() {$("#tabs").tabs();});
 $(document).ready(function() {
 	
 	var layout_histo = {
+			title: "Histogram",
 			bargap: 0.05, 
 			bargroupgap: 0.2,
 			autosize: false,
 			width: 500,
 			height: 500,
 			xaxis: {title: "Genome Distance (uM)"}, 
-			yaxis: {title: "Percent"}
+			yaxis: {title: "Modal Percent"}
 		};
 	
 	{% for result in result_lst %}
@@ -38,20 +39,60 @@ $(document).ready(function() {
 		);
 		
 		// plot distance histogram
-		var distance_array = [
-			{% for arr in result.5 %}
-				{{arr.1}}
-				{% if not forloop.last %},{% endif %}
+		var bins_foreground = [
+			{% for v in result.6 %}
+				{{v}} {% if not forloop.last %},{% endif %}
 			{% endfor %}
 		];
 		
-		var trace = {
-			x: distance_array,
-			type: 'histogram',
-			histnorm: 'percent',
+		var foreground = [
+			{% for v in result.7 %}
+				{{v}} {% if not forloop.last %},{% endif %}
+			{% endfor %}
+		];
+		
+		var bins_background = [
+			{% for v in result.8 %}
+				{{v}} {% if not forloop.last %},{% endif %}
+			{% endfor %}
+		];
+		
+		var background = [
+			{% for v in result.9 %}
+				{{v}} {% if not forloop.last %},{% endif %}
+			{% endfor %}
+		];
+		
+		var histo_foreground = {
+			x: bins_foreground,
+			y: foreground,
+			name: 'Distance',
+			type: 'bar',
+			
+			width: {{bar_width}},
+			
+			marker: {
+				color: 'rgb(49,130,189)',
+				opacity: 0.7,
+				},
+
 			};
 		
-		var data = [trace];
+		var histo_background = {
+			x: bins_background,
+			y: background,
+			name: 'Background',
+			type: 'bar',
+			
+			marker: {
+				color: 'rgb(204,204,204)',
+				opacity: 0.5,
+				},
+			};
+		
+		var data = [histo_foreground, histo_background];
+		
+		layout_histo.title = "{{select_a}} & {{select_b}} @ {{result.4}}";
 		Plotly.newPlot('histo_{{forloop.counter}}', data, layout_histo);
 		
 	{% endfor %}
@@ -135,9 +176,15 @@ td:before {
 	{% for result in result_lst %}
 		
 		<div id="{{forloop.counter}}" class="row">
-			<p>Confidence {{select_a}}: {{result.1}}. <br> Confidence {{select_b}}: {{result.3}}</p>
+			<p>
+				Proximity score {{select_a}}: {{result.1}}.<br>
+				Probe: {{result.0.Chrom}} ({{result.0.Start}}, {{result.0.End}}). Gene 5': {{select_a.TSS}}.
+				<br><br>
+				Proximity score {{select_b}}: {{result.3}}.<br>
+				Probe: {{result.2.Chrom}} ({{result.2.Start}}, {{result.2.End}}). Gene 5': {{select_b.TSS}}.
+			</p>
 			
-			<div id="tabledata_{{forloop.counter}}" class="slot-item only-SI large-6 columns">
+			<div id="tabledata_{{forloop.counter}}" class="slot-item only-SI large-5 columns">
 				<table id="table_{{forloop.counter}}">
 					<thead>
 					<tr>
@@ -165,7 +212,7 @@ td:before {
 				</div>
 			</div>
 			
-			<div class="slot-item only-SI large-6 columns">
+			<div class="slot-item only-SI large-7 columns">
 				<div id="histo_{{forloop.counter}}"><!-- Plotly histogram here --></div>
 			</div>
 			 
