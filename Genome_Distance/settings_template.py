@@ -22,6 +22,10 @@ HALF_DISTANCE = 200E3
 
 DEFAULT_AUTO_FIELD='django.db.models.AutoField'
 
+HISTO_START = 0
+HISTO_END = 20
+HISTO_STEP = 1
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
